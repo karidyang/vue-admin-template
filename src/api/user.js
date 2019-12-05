@@ -22,3 +22,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getRoleResources(data) {
+  return request({
+    url: '/user/role/resources',
+    method: 'get',
+    data
+  })
+}

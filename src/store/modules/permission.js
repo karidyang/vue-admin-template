@@ -1,4 +1,5 @@
 import { asyncRoutes, constantRoutes } from '@/router'
+import { getRoleResources } from '@/api/user'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -36,13 +37,17 @@ export function filterAsyncRoutes(routes, roles) {
 
 const state = {
   routes: [],
-  addRoutes: []
+  addRoutes: [],
+  resources: []
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
+  },
+  SET_RESOURCES: (state, resources) => {
+    state.resources = resources
   }
 }
 
@@ -57,6 +62,26 @@ const actions = {
       }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
+    })
+  },
+  loadResources({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      getRoleResources(state.token).then(response => {
+        const { data } = response
+
+        if (!data) {
+          reject('Verification failed, please Login again.')
+        }
+
+        const { resources } = data
+        if (!resources || resources.length <= 0) {
+          reject('loadResources: resources must be a non-null array!')
+        }
+        commit('SET_RESOURCES', resources)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   }
 }

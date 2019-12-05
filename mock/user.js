@@ -80,5 +80,22 @@ export default [
         data: 'success'
       }
     }
+  },
+
+  {
+    url: '/user/role/resources',
+    type: 'get',
+    response: config => {
+      return {
+        code: 20000,
+        data: {
+          resources: [
+            'addUser',
+            'editUser',
+            'removeUser'
+          ]
+        }
+      }
+    }
   }
 ]
